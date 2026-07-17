@@ -2,140 +2,41 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Estampador de Fotos</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f0f2f5;
-            padding: 20px;
-        }
-        .container {
-            background-color: white;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        h1 { color: #333; }
-        input[type="file"] {
-            margin: 20px 0;
-            padding: 10px;
-        }
-        #preview {
-            max-width: 100%;
-            margin-top: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            display: none;
-        }
-        .btn-download {
-            display: none;
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-top: 20px;
-            font-weight: bold;
-        }
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f0f2f5; padding: 20px; }
+        .card { background: white; max-width: 400px; margin: auto; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .pay-btn { background-color: #ff6600; color: white; padding: 15px; border: none; border-radius: 8px; width: 100%; cursor: pointer; font-size: 16px; }
+        #seccionSellado { display: none; margin-top: 20px; }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <h1>Estampador de Tiempo Completo</h1>
-    <p>Subí una imagen para ponerle la fecha, hora y milisegundos exactos del procesamiento.</p>
-    
-    <!-- El botón para subir la foto -->
-    <input type="file" id="fileInput" accept="image/*">
-    
-    <br>
-    <!-- Acá se va a mostrar la foto ya procesada -->
-    <img id="preview" alt="Foto estampada">
-    
-    <br><br>
-    <!-- Botón para descargar el resultado -->
-    <a id="downloadBtn" class="btn-download" href="#" download="foto-estampada.jpg">Descargar Imagen</a>
-</div>
-
-<!-- El "cerebro" en JavaScript que hace el truco -->
-<script>
-    const fileInput = document.getElementById('fileInput');
-    const preview = document.getElementById('preview');
-    const downloadBtn = document.getElementById('downloadBtn');
-
-    fileInput.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
+    <div class="card">
+        <h1>VENTANIYA SOLUCIONES</h1>
+        <button class="pay-btn" id="btnIngreso">ABONAR TASA Y ACCEDER</button>
         
-        reader.onload = function(event) {
-            const img = new Image();
-            img.onload = function() {
-                // Creamos un lienzo virtual (Canvas) del tamaño de la foto
-                const canvas = document.createElement('canvas');
-                canvas.width = img.width;
-                canvas.height = img.height;
-                const ctx = canvas.getContext('2d');
+        <div id="seccionSellado">
+            <input type="file" id="archivoInput" accept="image/*">
+            <p>Subí tu documento para sellar.</p>
+        </div>
+    </div>
 
-                // Dibujamos la imagen original en el lienzo
-                ctx.drawImage(img, 0, 0);
+    <script src="js/stamp.js"></script>
+    <script>
+        const btn = document.getElementById('btnIngreso');
+        btn.onclick = function() {
+            window.open("https://link.mercadopago.com.ar/ventaniyasoluciones", "_blank");
+            document.getElementById('seccionSellado').style.display = 'block';
+            btn.innerHTML = "PAGO REALIZADO - ELEGÍ TU ARCHIVO";
+        };
 
-                // --- AQUÍ OBTENEMOS LA FECHA Y MILISEGUNDOS EXACTOS ---
-                const ahora = new Date();
-                
-                // Formateamos la fecha (Día/Mes/Año)
-                const dia = String(ahora.getDate()).padStart(2, '0');
-                const mes = String(ahora.getMonth() + 1).padStart(2, '0');
-                const anio = ahora.getFullYear();
-                
-                // Formateamos la hora con milisegundos
-                const horas = String(ahora.getHours()).padStart(2, '0');
-                const minutos = String(ahora.getMinutes()).padStart(2, '0');
-                const segundos = String(ahora.getSeconds()).padStart(2, '0');
-                const milisegundos = String(ahora.getMilliseconds()).padStart(3, '0');
-
-                const textoTiempo = `${dia}/${mes}/${anio} - ${horas}:${minutos}:${segundos}.${milisegundos}`;
-
-                // --- ESTILOS DEL TEXTO EN LA IMAGEN ---
-                // Ajustamos el tamaño de la letra según el tamaño de la foto para que siempre se vea bien
-                const tamanioLetra = Math.round(img.width * 0.035); // 3.5% del ancho de la foto
-                ctx.font = `bold ${tamanioLetra}px Arial`;
-                
-                // Le ponemos un fondo negro semitransparente al texto para que se lea en fotos claras y oscuras
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
-                const anchoTexto = ctx.measureText(textoTiempo).width;
-                const altoTexto = tamanioLetra;
-                
-                // Posición (Abajo a la derecha con un margen)
-                const posX = img.width - anchoTexto - (img.width * 0.03);
-                const posY = img.height - (img.height * 0.04);
-                
-                // Dibujamos el rectángulo de fondo negro
-                ctx.fillRect(posX - 10, posY - altoTexto, anchoTexto + 20, altoTexto + 15);
-
-                // Dibujamos el texto en color blanco
-                ctx.fillStyle = 'white';
-                ctx.fillText(textoTiempo, posX, posY);
-
-                // Convertimos el lienzo en una imagen real para mostrarla y descargarla
-                const urlImagenProcesada = canvas.toDataURL('image/jpeg');
-                preview.src = urlImagenProcesada;
-                preview.style.display = 'inline-block';
-                
-                // Configuramos el botón de descarga
-                downloadBtn.href = urlImagenProcesada;
-                downloadBtn.style.display = 'inline-block';
-            }
-            img.src = event.target.result;
-        }
-        reader.readAsDataURL(file);
-    });
-</script>
-<script src="js/stamp.js"></script>
+        document.getElementById('archivoInput').addEventListener('change', function(e) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                aplicarSello(event.target.result);
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        });
+    </script>
 </body>
 </html>
