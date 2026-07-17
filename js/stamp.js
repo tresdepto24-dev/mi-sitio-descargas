@@ -1,33 +1,28 @@
-// stamp.js - Motor de sellado local
+// stamp.js - Motor de sellado digital naranja
 function aplicarSello(imagenURL) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     const img = new Image();
-    const selloBuhito = new Image();
-    
-    // Ruta donde pondremos tu sello
-    selloBuhito.src = 'assets/img/sello.png'; 
     
     img.onload = function() {
         canvas.width = img.width;
         canvas.height = img.height;
         ctx.drawImage(img, 0, 0);
         
-        // Dibujamos el sello en la esquina inferior derecha
-        ctx.drawImage(selloBuhito, canvas.width - 150, canvas.height - 150, 140, 140);
+        // Estilo de reloj digital naranja y gigante
+        const fecha = new Date().toLocaleString();
+        ctx.fillStyle = "#FF6600"; // Color naranja potente
+        ctx.font = "bold 60px 'Courier New', monospace"; // Tamaño 60px y letra estilo técnico
         
-        // Escribimos la fecha y hora exacta
-        const ahora = new Date();
-        const texto = "Veritas: " + ahora.toLocaleDateString() + " " + ahora.toLocaleTimeString();
-        ctx.font = "20px Arial";
-        ctx.fillStyle = "white";
-        ctx.fillText(texto, 20, canvas.height - 20);
+        // Dibujamos el texto en una posición fija (puedes ajustar el 50, 100 si necesitas moverlo)
+        ctx.fillText("FECHA: " + fecha, 50, 100);
         
-        // Descargamos el resultado
-        const link = document.createElement('a');
-        link.download = 'documento-sellado.png';
-        link.href = canvas.toDataURL();
-        link.click();
+        // Guardamos el resultado
+        const resultado = canvas.toDataURL("image/png");
+        const enlace = document.createElement('a');
+        enlace.href = resultado;
+        enlace.download = 'documento-sellado.png';
+        enlace.click();
     };
     img.src = imagenURL;
 }
