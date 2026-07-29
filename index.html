@@ -21,7 +21,6 @@
             justify-content: center;
             min-height: 100vh;
             margin: 0;
-            overflow-x: hidden;
         }
 
         .container {
@@ -48,7 +47,6 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 0 10px rgba(0, 255, 204, 0.5) inset;
-            animation: pulse-seal 3s infinite alternate;
             background: rgba(0, 255, 204, 0.05);
         }
 
@@ -65,11 +63,11 @@
             letter-spacing: 0.5px;
         }
 
-        /* Área de Estampado / Lienzo */
+        /* Área del Lienzo / Imagen */
         .canvas-area {
             position: relative;
             width: 100%;
-            height: 350px;
+            height: 320px;
             background: #000;
             border: 1px solid #1a3a4b;
             border-radius: 6px;
@@ -79,27 +77,28 @@
             justify-content: center;
         }
 
-        .canvas-area img, .canvas-area video {
+        .canvas-area img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            opacity: 0.8;
+            object-fit: contain;
         }
 
-        /* Letras Flotantes Atómicas */
+        /* Letras Flotantes Atómicas sobre la imagen */
         .floating-atoms {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            right: 20px;
+            top: 15px;
+            left: 15px;
+            right: 15px;
             pointer-events: none;
-            font-size: 13px;
+            font-size: 12px;
             color: #00ffcc;
             text-shadow: 0 0 8px #00ffcc, 0 0 20px #0055ff;
             opacity: 0.9;
-            animation: float-effect 4s ease-in-out infinite alternate;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 4px;
+            border-radius: 4px;
         }
 
         /* Línea de Tiempo e Info Inferior */
@@ -113,20 +112,39 @@
         }
 
         .timeline {
-            font-size: 12px;
+            font-size: 11px;
             color: #00ffcc;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
 
         .hash-code {
-            font-size: 10px;
+            font-size: 9px;
             color: #8892b0;
             word-break: break-all;
         }
 
-        /* Botón de Acción */
-        .btn-stamp {
+        /* Controles (Subir archivo y Botón Descargar) */
+        .controls {
             margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        input[type="file"] {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            color: var(--quantum-glow);
+            background: rgba(0,0,0,0.5);
+            border: 1px dashed var(--quantum-glow);
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn-stamp {
             background: transparent;
             color: var(--quantum-glow);
             border: 1px solid var(--quantum-glow);
@@ -137,22 +155,13 @@
             border-radius: 4px;
             transition: all 0.3s ease;
             box-shadow: 0 0 5px rgba(0, 255, 204, 0.2);
+            width: 100%;
         }
 
         .btn-stamp:hover {
             background: var(--quantum-glow);
             color: #000;
             box-shadow: 0 0 15px var(--quantum-glow);
-        }
-
-        @keyframes pulse-seal {
-            0% { transform: scale(1); box-shadow: 0 0 10px rgba(0, 255, 204, 0.3) inset; }
-            100% { transform: scale(1.03); box-shadow: 0 0 18px rgba(0, 255, 204, 0.7) inset; }
-        }
-
-        @keyframes float-effect {
-            0% { transform: translateY(0px) scale(1); }
-            100% { transform: translateY(-5px) scale(1.02); }
         }
     </style>
 </head>
@@ -164,14 +173,13 @@
             <h1>VentaniYA!</h1>
             <p>La EstampiYA!</p>
             <p><strong>posta 1001</strong></p>
-            <p style="font-size: 6px; margin-top: 4px;">DERECHOS RESERVADOS</p>
+            <p style="font-size: 5px; margin-top: 4px;">DERECHOS RESERVADOS VERIFICACION CUANTICA</p>
         </div>
 
-        <!-- Área de la Imagen con Letras Cuánticas Flotantes -->
+        <!-- Área de la Imagen / Papel a Estampar -->
         <div class="canvas-area">
-            <!-- Aquí puedes cambiar la imagen por defecto -->
-            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600&auto=format&fit=crop" alt="Base Cuántica">
-            <div class="floating-atoms">⚡ VERIFICACIÓN CUÁNTICA ACTIVA ⚡</div>
+            <img id="imagen-preview" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600&auto=format&fit=crop" alt="Papel o Foto Base">
+            <div class="floating-atoms">⚡ LETRAS ATÓMICAS CUÁNTICAS ⚡</div>
         </div>
 
         <!-- Línea de Tiempo y Hash -->
@@ -180,7 +188,11 @@
             <div class="hash-code" id="hash-display">HASH: GENERANDO BLOQUE...</div>
         </div>
 
-        <button class="btn-stamp" onclick="generarEstampadoCuantico()">EJECUTAR NUEVO ESTAMPADO</button>
+        <!-- Controles para Cargar y Descargar -->
+        <div class="controls">
+            <input type="file" id="input-archivo" accept="image/*" onchange="cargarArchivo(event)">
+            <button class="btn-stamp" onclick="descargarEstampado()">DESCARGAR ESTAMPADO CUÁNTICO</button>
+        </div>
     </div>
 
     <script>
@@ -193,10 +205,8 @@
             return hash;
         }
 
-        function actualizarEstampado() {
+        function actualizarReloj() {
             const ahora = new Date();
-            
-            // Extracción de datos temporales exactos con milisegundos
             const dia = String(ahora.getDate()).padStart(2, '0');
             const mes = String(ahora.getMonth() + 1).padStart(2, '0');
             const anio = ahora.getFullYear();
@@ -206,25 +216,99 @@
             const segundos = String(ahora.getSeconds()).padStart(2, '0');
             const milisegundos = String(ahora.getMilliseconds()).padStart(3, '0');
 
-            // Formato solicitado: dia, mes año - hora.minutos.segundos.milisegundos
-            const formatoTiempo = `${dia}/${mes}/${anio} - ${horas}:${minutos}:${segundos}.${milisegundos}`;
+            // Formato exacto solicitado: dia, mes año - hora.minutos.segundos.milisegundos
+            const formatoTiempo = `${dia}/${mes}/${anio} - ${horas}.${minutos}.${segundos}.${milisegundos}`;
             
             document.getElementById('timeline-display').innerText = `🕒 ${formatoTiempo}`;
             document.getElementById('hash-display').innerText = `HASH: ${generarHashAleatorio()}`;
         }
 
-        function generarEstampadoCuantico() {
-            actualizarEstampado();
-            // Efecto visual rápido de destello al estampar
-            const container = document.querySelector('.container');
-            container.style.boxShadow = '0 0 35px #00ffcc';
-            setTimeout(() => {
-                container.style.boxShadow = '0 0 20px rgba(0, 255, 204, 0.3)';
-            }, 300);
+        function cargarArchivo(event) {
+            const archivo = event.target.files[0];
+            if (archivo) {
+                const lector = new FileReader();
+                lector.onload = function(e) {
+                    document.getElementById('imagen-preview').src = e.target.result;
+                }
+                lector.readAsDataURL(archivo);
+            }
         }
 
-        // Actualización en tiempo real de los milisegundos
-        setInterval(actualizarEstampado, 50);
+        function descargarEstampado() {
+            actualizarReloj();
+            
+            // Creamos un lienzo invisible (canvas) para fusionar la foto, el sello y las leyendas
+            const img = document.getElementById('imagen-preview');
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = 1000;
+            canvas.height = 1000;
+
+            // Fondo negro base
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Dibujar la imagen cargada
+            let imgObj = new Image();
+            imgObj.crossOrigin = "anonymous";
+            imgObj.src = img.src;
+            
+            imgObj.onload = function() {
+                ctx.drawImage(imgObj, 50, 200, 900, 600);
+
+                // Sello Atómico Redondo Superior
+                ctx.beginPath();
+                ctx.arc(500, 100, 70, 0, 2 * Math.PI);
+                ctx.fillStyle = "rgba(5, 5, 10, 0.85)";
+                ctx.fill();
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = "#00ffcc";
+                ctx.stroke();
+
+                ctx.fillStyle = "#00ffcc";
+                ctx.font = "bold 16px 'Courier New'";
+                ctx.textAlign = "center";
+                ctx.fillText("VentaniYA!", 500, 85);
+                ctx.font = "11px 'Courier New'";
+                ctx.fillText("La EstampiYA! posta 1001", 500, 105);
+                ctx.font = "8px 'Courier New'";
+                ctx.fillText("Derechos reservados - Verificación Cuántica", 500, 125);
+
+                // Letras Atómicas Flotantes sobre la imagen
+                ctx.fillStyle = "#00ffcc";
+                ctx.font = "bold 22px 'Courier New'";
+                ctx.fillText("⚡ ESTAMPADO CUÁNTICO ATÓMICO ⚡", 500, 240);
+
+                // Línea de tiempo y hash abajo
+                const tiempoTexto = document.getElementById('timeline-display').innerText.replace('🕒 ', '');
+                const hashTexto = document.getElementById('hash-display').innerText;
+
+                ctx.fillStyle = "rgba(0, 0, 0, 0.9)";
+                ctx.fillRect(50, 830, 900, 120);
+                ctx.strokeStyle = "#00ffcc";
+                ctx.lineWidth = 2;
+                ctx.strokeRect(50, 830, 900, 120);
+
+                ctx.fillStyle = "#00ffcc";
+                ctx.font = "bold 18px 'Courier New'";
+                ctx.textAlign = "left";
+                ctx.fillText("TIEMPO: " + tiempoTexto, 70, 875);
+                
+                ctx.fillStyle = "#8892b0";
+                ctx.font = "14px 'Courier New'";
+                ctx.fillText(hashTexto, 70, 915);
+
+                // Descargar archivo generado automáticamente
+                const enlaceDescarga = document.createElement('a');
+                enlaceDescarga.download = 'estampado-cuantico-' + Date.now() + '.png';
+                enlaceDescarga.href = canvas.toDataURL('image/png');
+                enlaceDescarga.click();
+            };
+        }
+
+        // Actualizar milisegundos en vivo
+        setInterval(actualizarReloj, 50);
     </script>
 </body>
 </html>
