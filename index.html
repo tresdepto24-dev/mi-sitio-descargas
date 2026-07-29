@@ -21,25 +21,27 @@
             justify-content: center;
             min-height: 100vh;
             margin: 0;
+            padding: 10px;
         }
 
         .container {
             position: relative;
-            width: 90%;
-            max-width: 600px;
-            background: rgba(10, 15, 30, 0.85);
+            width: 100%;
+            max-width: 550px;
+            background: rgba(10, 15, 30, 0.9);
             border: 2px solid var(--quantum-glow);
             box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
             border-radius: 12px;
-            padding: 20px;
+            padding: 15px;
             text-align: center;
+            box-sizing: border-box;
         }
 
         /* Sello Redondo Superior */
         .atomic-seal {
-            width: 130px;
-            height: 130px;
-            margin: 0 auto 15px auto;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 12px auto;
             border: 2px dashed var(--quantum-glow);
             border-radius: 50%;
             display: flex;
@@ -51,14 +53,14 @@
         }
 
         .atomic-seal h1 {
-            font-size: 14px;
+            font-size: 13px;
             margin: 0;
             color: var(--quantum-glow);
             text-shadow: 0 0 5px var(--quantum-glow);
         }
 
         .atomic-seal p {
-            font-size: 8px;
+            font-size: 7px;
             margin: 2px 0 0 0;
             letter-spacing: 0.5px;
         }
@@ -67,7 +69,7 @@
         .canvas-area {
             position: relative;
             width: 100%;
-            height: 320px;
+            height: 280px;
             background: #000;
             border: 1px solid #1a3a4b;
             border-radius: 6px;
@@ -86,69 +88,69 @@
         /* Letras Flotantes Atómicas sobre la imagen */
         .floating-atoms {
             position: absolute;
-            top: 15px;
-            left: 15px;
-            right: 15px;
+            top: 10px;
+            left: 10px;
+            right: 10px;
             pointer-events: none;
-            font-size: 12px;
+            font-size: 11px;
             color: #00ffcc;
             text-shadow: 0 0 8px #00ffcc, 0 0 20px #0055ff;
             opacity: 0.9;
             text-transform: uppercase;
             letter-spacing: 1px;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.6);
             padding: 4px;
             border-radius: 4px;
         }
 
         /* Línea de Tiempo e Info Inferior */
         .quantum-metadata {
-            margin-top: 15px;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 10px;
+            margin-top: 12px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px;
             border-radius: 6px;
             border-left: 3px solid var(--quantum-glow);
             text-align: left;
         }
 
         .timeline {
-            font-size: 11px;
+            font-size: 10px;
             color: #00ffcc;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
         .hash-code {
-            font-size: 9px;
+            font-size: 8px;
             color: #8892b0;
             word-break: break-all;
         }
 
-        /* Controles (Subir archivo y Botón Descargar) */
+        /* Controles */
         .controls {
-            margin-top: 15px;
+            margin-top: 12px;
             display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
+            flex-direction: column;
+            gap: 8px;
         }
 
         input[type="file"] {
             font-family: 'Courier New', Courier, monospace;
-            font-size: 11px;
+            font-size: 10px;
             color: var(--quantum-glow);
             background: rgba(0,0,0,0.5);
             border: 1px dashed var(--quantum-glow);
-            padding: 8px;
+            padding: 6px;
             border-radius: 4px;
             cursor: pointer;
             width: 100%;
+            box-sizing: border-box;
         }
 
         .btn-stamp {
             background: transparent;
             color: var(--quantum-glow);
             border: 1px solid var(--quantum-glow);
-            padding: 10px 20px;
+            padding: 10px;
             font-family: 'Courier New', Courier, monospace;
             font-weight: bold;
             cursor: pointer;
@@ -173,12 +175,12 @@
             <h1>VentaniYA!</h1>
             <p>La EstampiYA!</p>
             <p><strong>posta 1001</strong></p>
-            <p style="font-size: 5px; margin-top: 4px;">DERECHOS RESERVADOS VERIFICACION CUANTICA</p>
+            <p style="font-size: 5px; margin-top: 3px;">DERECHOS RESERVADOS VERIFICACION CUANTICA</p>
         </div>
 
         <!-- Área de la Imagen / Papel a Estampar -->
         <div class="canvas-area">
-            <img id="imagen-preview" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600&auto=format&fit=crop" alt="Papel o Foto Base">
+            <img id="imagen-preview" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='400' background='%23111'><rect width='100%' height='100%' fill='%23080c14'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%2300ffcc' font-family='Courier New' font-size='16'>SUBE TU FOTO O PAPEL AQUÍ</text></svg>" alt="Base Cuántica">
             <div class="floating-atoms">⚡ LETRAS ATÓMICAS CUÁNTICAS ⚡</div>
         </div>
 
@@ -216,7 +218,7 @@
             const segundos = String(ahora.getSeconds()).padStart(2, '0');
             const milisegundos = String(ahora.getMilliseconds()).padStart(3, '0');
 
-            // Formato exacto solicitado: dia, mes año - hora.minutos.segundos.milisegundos
+            // Formato solicitado: dia, mes año - hora.minutos.segundos.milisegundos
             const formatoTiempo = `${dia}/${mes}/${anio} - ${horas}.${minutos}.${segundos}.${milisegundos}`;
             
             document.getElementById('timeline-display').innerText = `🕒 ${formatoTiempo}`;
@@ -237,7 +239,6 @@
         function descargarEstampado() {
             actualizarReloj();
             
-            // Creamos un lienzo invisible (canvas) para fusionar la foto, el sello y las leyendas
             const img = document.getElementById('imagen-preview');
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
@@ -249,62 +250,65 @@
             ctx.fillStyle = "#000000";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Dibujar la imagen cargada
             let imgObj = new Image();
-            imgObj.crossOrigin = "anonymous";
-            imgObj.src = img.src;
-            
             imgObj.onload = function() {
+                // Dibujar la imagen cargada de forma centrada
                 ctx.drawImage(imgObj, 50, 200, 900, 600);
 
                 // Sello Atómico Redondo Superior
                 ctx.beginPath();
                 ctx.arc(500, 100, 70, 0, 2 * Math.PI);
-                ctx.fillStyle = "rgba(5, 5, 10, 0.85)";
+                ctx.fillStyle = "rgba(5, 5, 10, 0.9)";
                 ctx.fill();
                 ctx.lineWidth = 4;
                 ctx.strokeStyle = "#00ffcc";
                 ctx.stroke();
 
                 ctx.fillStyle = "#00ffcc";
-                ctx.font = "bold 16px 'Courier New'";
+                ctx.font = "bold 15px 'Courier New'";
                 ctx.textAlign = "center";
                 ctx.fillText("VentaniYA!", 500, 85);
-                ctx.font = "11px 'Courier New'";
+                ctx.font = "10px 'Courier New'";
                 ctx.fillText("La EstampiYA! posta 1001", 500, 105);
-                ctx.font = "8px 'Courier New'";
-                ctx.fillText("Derechos reservados - Verificación Cuántica", 500, 125);
+                ctx.font = "7px 'Courier New'";
+                ctx.fillText("Derechos reservados - Verificación Cuántica", 500, 123);
 
                 // Letras Atómicas Flotantes sobre la imagen
                 ctx.fillStyle = "#00ffcc";
-                ctx.font = "bold 22px 'Courier New'";
-                ctx.fillText("⚡ ESTAMPADO CUÁNTICO ATÓMICO ⚡", 500, 240);
+                ctx.font = "bold 20px 'Courier New'";
+                ctx.fillText("⚡ ESTAMPADO CUÁNTICO ATÓMICO ⚡", 500, 235);
 
                 // Línea de tiempo y hash abajo
                 const tiempoTexto = document.getElementById('timeline-display').innerText.replace('🕒 ', '');
                 const hashTexto = document.getElementById('hash-display').innerText;
 
-                ctx.fillStyle = "rgba(0, 0, 0, 0.9)";
+                ctx.fillStyle = "rgba(0, 0, 0, 0.95)";
                 ctx.fillRect(50, 830, 900, 120);
                 ctx.strokeStyle = "#00ffcc";
                 ctx.lineWidth = 2;
                 ctx.strokeRect(50, 830, 900, 120);
 
                 ctx.fillStyle = "#00ffcc";
-                ctx.font = "bold 18px 'Courier New'";
+                ctx.font = "bold 17px 'Courier New'";
                 ctx.textAlign = "left";
                 ctx.fillText("TIEMPO: " + tiempoTexto, 70, 875);
                 
                 ctx.fillStyle = "#8892b0";
-                ctx.font = "14px 'Courier New'";
+                ctx.font = "13px 'Courier New'";
                 ctx.fillText(hashTexto, 70, 915);
 
-                // Descargar archivo generado automáticamente
+                // Disparar descarga directa
                 const enlaceDescarga = document.createElement('a');
                 enlaceDescarga.download = 'estampado-cuantico-' + Date.now() + '.png';
                 enlaceDescarga.href = canvas.toDataURL('image/png');
                 enlaceDescarga.click();
             };
+            
+            imgObj.onerror = function() {
+                alert("Error al procesar la imagen para el estampado. Por favor, sube una foto o papel válido.");
+            };
+
+            imgObj.src = img.src;
         }
 
         // Actualizar milisegundos en vivo
